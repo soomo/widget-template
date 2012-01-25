@@ -1,0 +1,58 @@
+<html>
+
+  <head>
+
+    <!-- We're using jQuery for convenience. See below for what we use it for. -->
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+
+  </head>
+  
+  <body style="font-family: sans-serif; border: 0; margin: 0; padding: 0; overflow: hidden;">
+
+    <!-- This is a sample widget that expands when you click it, except for
+         when you click the buttons, at which point they call "postResults" 
+         or navigate to a new "results" page. -->
+         
+    <div id='widget' style="width: 570px; height: 120px; border: 15px dashed orange; padding: 70px 20px 20px; font-size: 30px; text-align: center;">
+      This is the widget.<br/>
+      <input id='now' type='button' value="Save Now"></input> <input id='later' type='button' value="Save on New Page">
+    </div>
+
+    <script type="text/javascript">
+      $(function() {
+        
+        var wrapper = window.parent;
+        
+        // Sample handlers to return results or navigate to results page
+        //
+        $('input#now').click(function(event) {
+          event.stopPropagation();
+          wrapper.api.postResults({ timeClicked: new Date().getTime(), anyOtherKindOfData: 'contained inside the object' });
+        })
+        $('input#later').click(function(event) {
+          event.stopPropagation();
+          window.location = 'widget_results.html';
+        })
+        
+        // Replace as needed with other implementation (these use jQuery) or fixed numbers (if width is fixed, e.g.)
+        //
+        var getHeight = function() { return $('#widget').outerHeight(); }
+        var getWidth = function() { return $('#widget').outerWidth(); }
+        
+        // Sample handler to scale widget and make call for resize - hook the API call
+        // to the resize events on the widget itself.
+        //
+        $('#widget').click(function() {
+          $(this).css({height: $(this).innerHeight() + 25});
+          wrapper.api.resize(getHeight(), getWidth());
+        });
+
+        // Scale once after load & pass off element to track
+        wrapper.api.resize(getHeight(), getWidth());
+        wrapper.api.track($('#widget'));
+      });
+    </script>
+
+  </body>
+
+</html>

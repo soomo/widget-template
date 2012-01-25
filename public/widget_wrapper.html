@@ -1,0 +1,59 @@
+<html>
+
+  <head>
+
+    <!-- We're using jQuery for convenience. See below for what we use it for. -->
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+
+    <!-- The easyXDM library include -->
+    <script type="text/javascript" src="javascript/easyXDM.min.js"></script>
+
+    <!-- Crockford polyfill for JSON stringify/parse for browsers without it -->
+    <script type="text/javascript" src="javascript/json2.js"></script>
+
+  </head>
+  
+  <body style="border: 0; margin: 0; padding: 0;">
+
+    <iframe style="border: 0; padding: 0; margin: 0;"></iframe>
+         
+    <script type="text/javascript">
+      $(function() {
+        
+        // easyXDM setup
+        //
+        var socket = new easyXDM.Socket({});
+        var $iframe = $('iframe');        
+        
+        window.api = {
+          post: function(message) {
+            socket.postMessage(JSON.stringify(message));
+          },
+          postResults: function(resultsObject) {
+            socket.postMessage(JSON.stringify({ results: resultsObject }));
+          },
+          resize: function(height, width) {
+            $iframe.css({ height: height, width: width });
+            socket.postMessage(JSON.stringify({ resize: { width: width, height: height }}));
+          },
+          track: function(element) {
+            $(element).mousemove(function(event) {
+              window.api.post({ mouseMove: { time: event.time, clientX: event.clientX, clientY: event.clientY }});
+            });
+          }
+        }
+
+        var getURLParameter = function(name) {
+          return decodeURIComponent(
+            (location.search.match(RegExp("[?|&]"+name+'=(.+?)(&|$)'))||[,null])[1]
+          );  
+        };
+        
+        // Load the wrapper iframe with the widget - it will use the parent window's "api"
+        $iframe[0].src = getURLParameter('url') + "?user_id=" + getURLParameter('user_id');
+      });
+    </script>
+
+  </body>
+
+</html>

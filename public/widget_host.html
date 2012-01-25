@@ -1,0 +1,47 @@
+<html>
+
+  <head>
+
+    <!-- We're using jQuery for convenience. See below for what we use it for -->
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+
+    <!-- The easyXDM library include -->
+    <script type="text/javascript" src="javascript/easyXDM.min.js"></script>
+
+    <!-- Crockford polyfill for JSON stringify/parse for browsers without it -->
+    <script type="text/javascript" src="javascript/json2.js"></script>
+
+  </head>
+  
+  <body>
+    
+    <style type="text/css">
+      #widget-container iframe {
+        overflow: hidden;
+      }
+    </style>
+    
+    <div style="border: 1px solid red;" id="widget-container"></div>
+    
+    <p>Messages received by container:</p>
+    <ul id="log"></ul>
+
+    <script type="text/javascript">
+    	new easyXDM.Socket({
+    		remote: "widget_wrapper.html?url=widget.html&user_id=user:course:section",
+    		container: $("#widget-container")[0],
+    		onMessage: function(message, origin) {
+    			message = $.parseJSON(message);
+    			if (message['resize']) {
+    				$('#widget-container iframe').css({height: message['resize']['height']});
+    				$('#widget-container iframe').css({width: message['resize']['width']});
+    			}
+    			$('#log').prepend("<li>" + JSON.stringify(message) + "</li>");
+    		}
+    	});
+    </script>
+
+  </body>
+
+</html>
+

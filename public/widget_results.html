@@ -1,0 +1,30 @@
+<html>
+
+  <head>
+
+    <!-- We're using jQuery for convenience. See below for what we use it for. -->
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+
+  </head>
+  
+  <body style="font-family: sans-serif; border: 0; margin: 0; padding: 0; overflow: hidden;">
+
+    <div id='widget' style="width: 170px; height: 150px; border: 15px dashed green; padding: 70px 20px 20px; font-size: 30px; text-align: center;">
+      Great! You're done.
+    </div>
+
+    <script type="text/javascript">
+      $(function() {
+        
+        var wrapper = window.parent;
+        var $widget = $('#widget');
+        wrapper.api.postResults({ groupScores: [ 33, 44, 55 ], groupNames: [ 'Apple', 'Banaba', 'Carrot' ] });
+        wrapper.api.resize($widget.outerHeight(), $widget.outerWidth());
+        wrapper.api.track($widget);
+
+      });
+    </script>
+
+  </body>
+
+</html>
